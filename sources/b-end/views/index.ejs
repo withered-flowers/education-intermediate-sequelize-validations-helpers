@@ -11,10 +11,48 @@
 <body>
   <%- include('partials/header.ejs') %>
 
-  <div class="mui-container-fluid">
-    <div class="mui-row">
-      <div class="mui-col-sm">
-        Klik link di atas untuk memilih yah !
+  <div id="content-wrapper" class="mui--text-center" style="padding-top: 5em;">
+    <div class="mui--appbar-height"></div>
+    <div class="mui-container-fluid">
+      <div class="mui-row">
+        <div class="mui-col-md-1">&nbsp;</div>
+
+        <div class="mui-col-md-10">
+          <table class="mui-table mui-table--bordered row wow zoomInDown">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Region Name</th>
+                <th>Mining Name</th>
+                <th>Mining Type</th>
+                <th>Mining Amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- List items here -->
+              <% dataCombo.forEach((elem, index) => { %>
+                <% elem.Minings.forEach((elem2, index2) => { %>
+                <tr>
+                  <td><%= index * elem.Minings.length + index2 + 1  %></td>
+                  <td><%= elem.name %></td>
+                  <td><%= elem2.name %></td>
+                  <td><%= elem2.type %></td>
+                  <td><%= elem2.amount %></td>
+                  <td>
+                    <a href="/minings/edit/<%= elem2.id %>">Edit</a>
+                    |
+                    <a href="/minings/delete/<%= elem2.id %>">Delete</a>
+                  </td>
+                </tr>
+                <% }) %>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mui-col-md-1">&nbsp;</div>
       </div>
     </div>
   </div>

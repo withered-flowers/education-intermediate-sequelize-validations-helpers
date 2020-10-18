@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+  <%- include('partials/include-css.ejs') %>
+</head>
+
+<body>
+  <%- include('partials/header.ejs') %>
+
+  <div id="content-wrapper" style="padding-top: 5em;">
+    <div class="mui--appbar-height"></div>
+    <div class="mui-container-fluid">
+      <div class="mui-row">
+        <div class="mui-col-md-1">&nbsp;</div>
+
+        <div class="mui-col-md-10">
+          <form class="mui-form" method="POST" action="/minings/add">
+            <legend>Add Mining</legend>
+            <div class="mui-textfield mui-textfield--float-label">
+              <input type="text" name="mining_name">
+              <label>Mining Name</label>
+            </div>
+            <div class="mui-textfield mui-textfield--float-label">
+              <input type="number" name="mining_amount">
+              <label>Mining Amount</label>
+            </div>
+            <div class="mui-select">
+              <select name="mining_type">
+                <option values="Oculi">Oculi</option>
+                <option values="Plants">Plants</option>
+                <option values="Minerals">Minerals</option>
+              </select>
+              <label>Mining Type</label>
+            </div>
+            <button style="width: 100%" type="submit" class="mui-btn mui-btn--primary mui-btn--raised">Add Mining</button>
+          </form>
+        </div>
+
+        <div class="mui-col-md-1">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer.ejs') %>
+  <%- include('partials/include-js.ejs') %>
+</body>
+
+</html>

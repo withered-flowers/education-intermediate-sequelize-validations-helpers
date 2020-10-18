@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Anemoculi",
+    "type": "Oculus",
+    "amount": 65,
+    "RegionId": 1
+  },
+  {
+    "name": "Dandelion Seed",
+    "type": "Plants",
+    "amount": 10,
+    "RegionId": 1
+  },
+  {
+    "name": "Electric Crystal",
+    "type": "Minerals",
+    "amount": 21,
+    "RegionId": 1
+  },
+  {
+    "name": "Geoculi",
+    "type": "Oculus",
+    "amount": 131,
+    "RegionId": 2
+  },
+  {
+    "name": "Cor Lazuli",
+    "type": "Minerals",
+    "amount": 53,
+    "RegionId": 2
+  },
+  {
+    "name": "Jueyun Sambal",
+    "type": "Plants",
+    "amount": 32,
+    "RegionId": 2
+  }
+]
