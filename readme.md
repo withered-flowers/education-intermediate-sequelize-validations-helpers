@@ -28,13 +28,30 @@ Contoh Kasus:
     - alias
     - rulers
 - Diketahui bahwa `name` tidak boleh memiliki angka
-- Diketahui bahwa `alias` harus dalam bentuk 
+- Diketahui bahwa `alias` harus dalam bentuk huruf kecil semua
 
 ```javascript
 // file: models/region.js
+  
+  // sebelumnya begini
   Region.init({
     name: DataTypes.STRING,
     alias: DataTypes.STRING,
+    rulers: DataTypes.STRING
+  }
+
+  // akan kita ubah menjadi
+  Region.init({
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        isAlpha: true
+      }
+    },
+    alias: {
+      type: DataTypes.STRING,
+      isLowerCase: true
+    },
     rulers: DataTypes.STRING
   }
 ```
@@ -42,10 +59,65 @@ Contoh Kasus:
 
 ### Helpers Method
 
+
 ### Let's Make the App
-1. Diketahui ada sebuah aplikasi 
+Mari kita membuat aplikasi yang akan menampilkan data kota dari sebuah 
+game dan hasil produksi tiap kota yang ada.
 
+Diketahui tabelnya adalah sebagai berikut:
+```
+Regions
+```
 
+| Kolom              | Tipe         | Deskripsi   |
+|:-------------------|:-------------|:------------|
+| id                 | SERIAL       | PRIMARY KEY |
+| name               | VARCHAR(255) | NOT NULL    |
+| alias              | VARCHAR(255) | NOT NULL    |
+| rulers             | VARCHAR(255) | NOT NULL    |
+| createdAt          | TIMESTAMP    | NOT NULL    |
+| updatedAt          | TIMESTAMP    | NOT NULL    |
+
+```
+Minings
+```
+
+| Kolom              | Tipe         | Deskripsi   |
+|:-------------------|:-------------|:------------|
+| id                 | SERIAL       | PRIMARY KEY |
+| name               | VARCHAR(255) | NOT NULL    |
+| type               | VARCHAR(255) | NOT NULL    |
+| amount             | INTEGER      | NOT NULL    |
+| createdAt          | TIMESTAMP    | NOT NULL    |
+| updatedAt          | TIMESTAMP    | NOT NULL    |
+
+#### Tabel 2
+
+| Endpoint            | Deskripsi                                              |
+|:--------------------|:-------------------------------------------------------|
+| GET /               | Menampilkan Regions(name) dan Minings(name, type, amt) |
+| GET /minings/add    | Menampilkan Form untuk menambahkan data Minings        |
+| POST /minings/add   | Memproses form untuk penambahan data                   |
+| GET /minings/del/:id| Menghapus data Minings berdasar id yang terpilih       |
+
+- Pada `GET /`, tampilkan sebuah `anchor` mengarah ke `GET /minings/add` dan
+  action per baris data untuk mengarah ke `GET /minings/del/:id`
+- Pada `GET /minings/add`, tampilkan form untuk memasukkan data dengan ketentuan
+  sebagai berikut:
+  - Input Text untuk Mining `name`
+  - Input Number untuk Mining `amount`
+  - Select option untuk Mining `type` yaitu (Oculus, Plants, Minerals)
+  - Select option untuk Mining `RegionId` yang akan menampilkan data dari 
+    Region `name` dan value Region `id`
+- Lakukan juga validasi untuk input yang ada dengan ketentuan sebagai berikut:
+  - `name` tidak boleh ada angka
+  - `amount` hanya boleh angka dari rentang 1 s.d. 150, dan hanya boleh
+     berupa angka yang habis dibagi lima
+  - `type` hanya boleh berisi `Oculus` atau `Plants` atau `Minerals`
+
+Jadi setelah melihat requirement seperti, apa sajakah yang harus kita lakukan?
+
+### Langkah 1 - Inisialisasi & Install module yang dibutuhkan terlebih dahulu
 `npx sequelize model:generate --name Region --attributes name:string,alias:string,rulers:string`
 - Jangan lupa mengganti async / await
 
