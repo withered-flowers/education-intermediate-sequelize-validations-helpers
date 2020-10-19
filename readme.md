@@ -331,4 +331,32 @@ tabel `Regions` dan `Minings` agar dapat ditampilkan pada `GET /`.
 Kita akan mencobanya dengan memodifikasi kode yang terdapat pada 
 `controllers/controller.js`.
 
+Langkah-langkahnya adalah:
+- Comment variabel `dataCombination`
+- Tambahkan object `Mining` dan `Region` dengan require `models/index.js`
+- Modifikasi method `getRootHandler` sehingga menjadi seperti kode 
+  di bawah ini:
+
+```javascript
+// File: controllers/controller.js
+const { Mining, Region } = require('../models/index.js');
+...
+  static getRootHandler(req, res) {
+    // Menampilkan halaman index.ejs
+    // Membutuhkan data sebagai berikut:
+    // dataCombo -> Seluruh data region yang memiliki data mining nya juga.
+
+    Region.findAll({ include: Mining })
+      .then(dataCombination => {
+        res.render('index', {
+          dataCombo: dataCombination
+        });
+      })
+      .catch(err => {
+        res.send(err);
+      });
+  }
+...
+```
+
 ### References

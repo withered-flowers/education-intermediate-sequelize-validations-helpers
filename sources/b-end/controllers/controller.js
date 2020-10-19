@@ -1,64 +1,66 @@
+const { Mining, Region } = require('../models/index.js');
+
 // data dummy untuk testing
-const dataCombination = [
-  {
-    "id": 1,
-    "name": "Mondsteradt",
-    "alias": "City of Freedom",
-    "rulers": "Barbara",
-    "Minings": [
-      {
-        "id": 1,
-        "name": "Anemoculi",
-        "type": "Oculus",
-        "amount": 65,
-        "RegionId": 1
-      },
-      {
-        "id": 2,
-        "name": "Dandelion Seed",
-        "type": "Plants",
-        "amount": 10,
-        "RegionId": 1
-      },
-      {
-        "id": 3,
-        "name": "Electric Crystal",
-        "type": "Minerals",
-        "amount": 21,
-        "RegionId": 1
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "name": "Yueli",
-    "alias": "City of Harbor",
-    "rulers": "Rex Lazuli",
-    "Minings": [
-      {
-        "id": 4,
-        "name": "Geoculi",
-        "type": "Oculus",
-        "amount": 131,
-        "RegionId": 2
-      },
-      {
-        "id": 5,
-        "name": "Cor Lazuli",
-        "type": "Minerals",
-        "amount": 53,
-        "RegionId": 2
-      },
-      {
-        "id": 6,
-        "name": "Jueyun Sambal",
-        "type": "Plants",
-        "amount": 32,
-        "RegionId": 2
-      }
-    ]
-  }
-];
+// const dataCombination = [
+//   {
+//     "id": 1,
+//     "name": "Mondsteradt",
+//     "alias": "City of Freedom",
+//     "rulers": "Barbara",
+//     "Minings": [
+//       {
+//         "id": 1,
+//         "name": "Anemoculi",
+//         "type": "Oculus",
+//         "amount": 65,
+//         "RegionId": 1
+//       },
+//       {
+//         "id": 2,
+//         "name": "Dandelion Seed",
+//         "type": "Plants",
+//         "amount": 10,
+//         "RegionId": 1
+//       },
+//       {
+//         "id": 3,
+//         "name": "Electric Crystal",
+//         "type": "Minerals",
+//         "amount": 21,
+//         "RegionId": 1
+//       }
+//     ]
+//   },
+//   {
+//     "id": 2,
+//     "name": "Yueli",
+//     "alias": "City of Harbor",
+//     "rulers": "Rex Lazuli",
+//     "Minings": [
+//       {
+//         "id": 4,
+//         "name": "Geoculi",
+//         "type": "Oculus",
+//         "amount": 131,
+//         "RegionId": 2
+//       },
+//       {
+//         "id": 5,
+//         "name": "Cor Lazuli",
+//         "type": "Minerals",
+//         "amount": 53,
+//         "RegionId": 2
+//       },
+//       {
+//         "id": 6,
+//         "name": "Jueyun Sambal",
+//         "type": "Plants",
+//         "amount": 32,
+//         "RegionId": 2
+//       }
+//     ]
+//   }
+// ];
 
 const dataRegion = [
   {
@@ -81,9 +83,15 @@ class Controller {
     // Membutuhkan data sebagai berikut:
     // dataCombo -> Seluruh data region yang memiliki data mining nya juga.
 
-    res.render('index', {
-      dataCombo: dataCombination
-    });
+    Region.findAll({ include: Mining })
+      .then(dataCombination => {
+        res.render('index', {
+          dataCombo: dataCombination
+        });
+      })
+      .catch(err => {
+        res.send(err);
+      });
   }
 
   static getMiningsAddHandler(req, res) {

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Mining.belongsTo(models.Region);
     }
   };
   Mining.init({
