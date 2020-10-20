@@ -133,7 +133,19 @@ class Controller {
   }
 
   static getMiningsDelHandler(req, res) {
-    res.send('GET /minings/del/:id');
+    let id = +req.params.id;
+
+    Mining.destroy({
+      where: {
+        id: id
+      }
+    })
+      .then(result => {
+        res.redirect('/')
+      })
+      .catch(err => {
+        res.send(err);
+      });
   }
 }
 

@@ -145,8 +145,11 @@ Minings
   - `amount` hanya boleh angka dari rentang 1 s.d. 150, dan hanya boleh
      berupa angka yang habis dibagi lima
   - `type` hanya boleh berisi `Oculus` atau `Plants` atau `Minerals`
-* Pada `Get /`, modifikasilah tulisan amount dengan menambahkan 2 digit angka 
+* Pada `GET /`, modifikasilah tulisan amount dengan menambahkan 2 digit angka 
   decimal di belakang koma dengan menggunakan helper class.
+* Pada `GET /minings/del/:id`, modifikasilah kode sehingga kita akan meminta 
+  konfirmasi untuk menghapus data, apabila user menekan tombol `cancel` atau 
+  `no`, maka data tidak jadi dihapus.
 
 Jadi setelah melihat requirement seperti, apa sajakah yang harus kita lakukan?
 
@@ -530,7 +533,49 @@ const Helper = require('../helpers/helper.js');
 Sampai di sini, artinya kita sudah berhasil menggunakan helper's class dengan
 cukup baik.
 
-Jalankan kode yang sudah kita buat ini dan lihatlah hasilnya !
+Selanjutnya kita akan membuat halaman delete dengan menggunakan konfirmasinya !
+
+### Langkah 9 - Delete with Confirmation
+Untuk halaman delete dengan konfirmasi ini, akan ada 2 langkah yang harus kita
+lakukan:
+- Memodifikasi `controllers/controller.js` sehingga data dapat dihapus
+- Memodifikasi `views/index.ejs` sehingga dapat meminta konfirmasi
+
+Modifikasi kode dapat dilihat di bawah ini
+
+```javascript
+// File: controllers/controller.js
+...
+  static getMiningsDelHandler(req, res) {
+    let id = +req.params.id;
+
+    Mining.destroy({
+      where: {
+        id: id
+      }
+    })
+      .then(result => {
+        res.redirect('/')
+      })
+      .catch(err => {
+        res.send(err);
+      });
+  }
+```
+
+```html
+<!-- File: views/index.ejs -->
+  ...
+  <!-- Ubah untuk konfirmasi di sini -->
+  <a href="/minings/del/<%= elem2.id %>" 
+    onclick="return confirm('apakah data ini akan dihapus?')">
+      Delete
+  </a>
+  ...
+```
+
+Setelah selesai melakukan modifikasi ini, jalankanlah semua kode yang ada, 
+dan lihatlah hasilnya !
 
 ### References
 - [Validation - Terms](https://www.computerscience.gcse.guru/theory/validation)

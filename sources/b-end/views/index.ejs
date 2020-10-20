@@ -44,7 +44,8 @@
                   <td>
                     <a href="/minings/edit/<%= elem2.id %>">Edit</a>
                     |
-                    <a href="/minings/del/<%= elem2.id %>">Delete</a>
+                    <!-- Ubah untuk konfirmasi di sini -->
+                    <a href="/minings/del/<%= elem2.id %>" onclick="return confirm('apakah data ini akan dihapus?')">Delete</a>
                   </td>
                 </tr>
                 <% }) %>
