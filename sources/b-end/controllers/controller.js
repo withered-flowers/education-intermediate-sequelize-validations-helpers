@@ -1,4 +1,5 @@
 const { Mining, Region } = require('../models/index.js');
+const Helper = require('../helpers/helper.js');
 
 // data dummy untuk testing
 // const dataCombination = [
@@ -86,7 +87,9 @@ class Controller {
     Region.findAll({ include: Mining })
       .then(dataCombination => {
         res.render('index', {
-          dataCombo: dataCombination
+          dataCombo: dataCombination,
+          // Helpernya bisa kita lempar ke ejs untuk kita pakai
+          helperClass: Helper
         });
       })
       .catch(err => {

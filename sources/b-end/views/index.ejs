@@ -39,7 +39,8 @@
                   <td><%= elem.name %></td>
                   <td><%= elem2.name %></td>
                   <td><%= elem2.type %></td>
-                  <td><%= elem2.amount %></td>
+                  <!-- Ganti kode ini untuk menggunakan helper class -->
+                  <td><%= helperClass.tambahDuaAngkaDiBelakangDecimal(elem2.amount) %></td>
                   <td>
                     <a href="/minings/edit/<%= elem2.id %>">Edit</a>
                     |

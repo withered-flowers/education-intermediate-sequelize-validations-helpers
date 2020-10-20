@@ -38,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
         isNumeric: true,
         min: 1,
         max: 150,
+        // Karena habis dibagi 5 tidak ada built-in nya
+        // Maka kita akan membuat custom validationnya sendiri
         habisDibagiLima(value) {
           if(value % 5 !== 0) {
             throw new Error("Tidak habis dibagi lima oi !");

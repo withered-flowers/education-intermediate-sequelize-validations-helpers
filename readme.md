@@ -70,7 +70,14 @@ seperti berikut:
 
 
 ### Helper's Class
+Helper's class merupakan salah satu cara untuk menghadapi sesuatu yang disebut
+dengan `code smell`.
 
+Salah satu karakteristik dari `code smell` misalnya adalah adanya kode yang 
+`duplicate` / not DRY yang digunakan di berbagai tempat di aplikasi kita.
+
+Sehingga untuk kode tersebut dapat kita masukkan ke dalam helper's class agar
+dapat digunakan di berbagai tempat pada aplikasi kita.
 
 ### Let's Make the App
 Sekarang mari kita mencoba untuk membuat aplikasi yang akan mengimplementasikan
@@ -375,6 +382,12 @@ Sebagai bahan pembelajaran kita, maka kita akan mencoba untuk melakukan
 validasi terhadap data yang ada sesuai requirement di atas, dengan menggunakan
 sequelize Validation.
 
+Validation yang akan kita lakukan adalah sebagai berikut:
+- `name` tidak boleh ada angka
+- `amount` hanya boleh angka dari rentang 1 s.d. 150, dan hanya boleh
+  berupa angka yang habis dibagi lima
+- `type` hanya boleh berisi `Oculus` atau `Plants` atau `Minerals`
+
 Karena data yang akan kita validasi ada pada model `Mining`, maka kita 
 selanjutnya akan memodifikasi kode pada `models/mining.js`
 
@@ -383,13 +396,143 @@ selanjutnya akan memodifikasi kode pada `models/mining.js`
 ...
   Mining.init({
     // tambahkan validasi di sini
-    name: DataTypes.STRING,
-    type: DataTypes.STRING,
-    amount: DataTypes.INTEGER
+    name: { 
+      type: DataTypes.STRING,
+      validate: {
+        isAlpha: true
+      }
+    },
+    type: {
+      type: DataTypes.STRING,
+      validate: {
+        isIn: {
+          // Apabila ingin menggunakan custom message !
+          args: [[ 'Oculus', 'Minerals', 'Plants' ]],
+          msg: "Harus salah satu dari 3 pilihan ini oi !"
+        }
+      }
+    },
+    amount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isNumeric: true,
+        min: 1,
+        max: 150,
+        // Karena habis dibagi 5 tidak ada built-in nya
+        // Maka kita akan membuat custom validationnya sendiri
+        habisDibagiLima(value) {
+          if(value % 5 !== 0) {
+            throw new Error("Tidak habis dibagi lima oi !");
+          }
+        }
+      }
+    }
   }
 ...
 ```
 
+Selanjutnya kita tinggal memodifikasi pada file `controllers/controller.js`
+untuk bisa memproses penambahan data dan validationnya ini
+
+```javascript
+// Files: controllers/controller.js
+  ...
+  static postMiningsAddHandler(req, res) {
+    // Menerima data dari input form dengan nama
+    // req.body.mining_name   => nama dari Mining
+    // req.body.mining_amount => jumlah dari Mining
+    // req.body.mining_type   => tipe dari Mining (Oculus / Plants / Minerals)
+    // req.body.mining_region => RegionId tempat Mining berada
+
+    // bentuk datanya terlebih dahulu
+    let objMining = {
+      name: req.body.mining_name,
+      amount: req.body.mining_amount,
+      type: req.body.mining_type,
+      RegionId: +req.body.mining_region
+    };
+
+    Mining.create(objMining)
+      .then(result => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        console.log(JSON.stringify(err, null, 2));
+        res.send(err);
+      });
+  }
+  ...
+```
+
+Sampai dengan tahap ini, artinya kita sudah menambahkan proses menambahkan data
+ke dalam database beserta menggunakan validasi nya dengan baik.
+
+Selanjutnya kita akan membuat helper class nya
+
+### Langkah 8 - Membuat Helper Class
+Dalam pembuatan helper class, supaya rapi, langkah-langkahnya adalah sebagai
+berikut:
+- Menambahkan sebuah folder `helpers`, 
+- Membuat sebuah file `helper.js`
+- Menambahkan class `Helper` dan akan kita export.
+- Membuat method yang dibutuhkan (menambah angka 0 sebanyak 2 buah di belakang 
+  koma)
+
+Kode untuk `helpers/helper.js` dapat dilihat pada kode di bawah ini.
+
+```javascript
+// File: helpers/helper.js
+class Helper {
+  static tambahDuaAngkaDiBelakangDecimal(angka) {
+    return angka.toFixed(2);
+  }
+}
+
+module.exports = Helper;
+```
+
+- Selanjutnya pada `controllers/controller.js` kita akan menambahkan require
+  untuk `helpers/helper.js` ini, kemudian akan kita passing ke index.ejs nya.
+
+```javascript
+// File: controllers/controller.js
+const Helper = require('../helpers/helper.js');
+
+...
+  static getRootHandler(req, res) {
+    // Menampilkan halaman index.ejs
+    // Membutuhkan data sebagai berikut:
+    // dataCombo -> Seluruh data region yang memiliki data mining nya juga.
+
+    Region.findAll({ include: Mining })
+      .then(dataCombination => {
+        res.render('index', {
+          dataCombo: dataCombination,
+          // Helpernya bisa kita lempar ke ejs untuk kita pakai
+          helperClass: Helper
+        });
+      })
+      .catch(err => {
+        res.send(err);
+      });
+  }
+...
+```
+
+```html
+<!-- File: views/index.ejs -->
+  ...
+  <!-- Ganti kode ini untuk menggunakan helper class -->
+  <td><%= helperClass.tambahDuaAngkaDiBelakangDecimal(elem2.amount) %></td>
+  ...
+```
+
+Sampai di sini, artinya kita sudah berhasil menggunakan helper's class dengan
+cukup baik.
+
+Jalankan kode yang sudah kita buat ini dan lihatlah hasilnya !
+
 ### References
 - [Validation - Terms](https://www.computerscience.gcse.guru/theory/validation)
 - [Sequelize - Validation & Constraint](https://sequelize.org/master/manual/validations-and-constraints.html)
+- [Code Smell - Wikipedia](https://en.wikipedia.org/wiki/Code_smell)
