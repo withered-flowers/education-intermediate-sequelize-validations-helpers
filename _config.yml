@@ -4,7 +4,7 @@ relative_links:
   enabled: true
   collections: true
 include:
-  - README.md
+  - readme.md
 theme: jekyll-theme-cayman
 title: Belajar Sequelize Validation dan Helpers
 baseurl: "education-intermediate-sequelize-validations-helpers"
