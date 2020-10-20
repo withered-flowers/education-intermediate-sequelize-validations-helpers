@@ -15,9 +15,36 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Mining.init({
-    name: DataTypes.STRING,
-    type: DataTypes.STRING,
-    amount: DataTypes.INTEGER
+    // tambahkan validasi di sini
+    name: { 
+      type: DataTypes.STRING,
+      validate: {
+        isAlpha: true
+      }
+    },
+    type: {
+      type: DataTypes.STRING,
+      validate: {
+        isIn: {
+          // Apabila ingin menggunakan custom message !
+          args: [[ 'Oculus', 'Minerals', 'Plants' ]],
+          msg: "Harus salah satu dari 3 pilihan ini oi !"
+        }
+      }
+    },
+    amount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isNumeric: true,
+        min: 1,
+        max: 150,
+        habisDibagiLima(value) {
+          if(value % 5 !== 0) {
+            throw new Error("Tidak habis dibagi lima oi !");
+          }
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Mining',

@@ -111,7 +111,22 @@ class Controller {
     // req.body.mining_type   => tipe dari Mining (Oculus / Plants / Minerals)
     // req.body.mining_region => RegionId tempat Mining berada
 
-    res.send('POST /minings/add');
+    // bentuk datanya terlebih dahulu
+    let objMining = {
+      name: req.body.mining_name,
+      amount: req.body.mining_amount,
+      type: req.body.mining_type,
+      RegionId: +req.body.mining_region
+    };
+
+    Mining.create(objMining)
+      .then(result => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        console.log(JSON.stringify(err, null, 2));
+        res.send(err);
+      });
   }
 
   static getMiningsDelHandler(req, res) {

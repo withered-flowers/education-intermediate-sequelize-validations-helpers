@@ -16,6 +16,10 @@ Dalam konteks per-database-an, artinya kita akan menguji data yang diinput
 ke dalam database, terhadap logic yang digunakan untuk pengujian konten dari
 input sebelum masuk ke database (level database).
 
+**WARNING**  
+Dalam proses validasi, kita TIDAK dapat mengetahui bahwa data yang dimasukkan
+adalah merupakan data yang akurat atau tidak !
+
 Sequelize sendiri sudah menyediakan juga built-in validator yang dapat digunakan
 pada level aplikasi, yang dapat kita definisikan di model yang menggunakan
 sequelize.
@@ -29,6 +33,14 @@ Contoh Kasus:
     - rulers
 - Diketahui bahwa `name` tidak boleh memiliki angka
 - Diketahui bahwa `alias` harus dalam bentuk huruf kecil semua
+
+Apabila contoh kasus di atas di-`hadapi` dengan cara MVC, maka kita akan
+membuat sebuah method pada controller / model untuk menghandle validasi 
+data input tersebut untuk kemudian akan kita `redirect` melalui req.query yang
+ada, namun apa jadinya bila kita menggunakan cara sequelize?
+
+Maka kita akan memodifikasi model yang sudah dibuat oleh sequelize-cli menjadi
+seperti berikut:
 
 ```javascript
 // file: models/region.js
@@ -251,7 +263,6 @@ down: (queryInterface, Sequelize) => {
 * Selanjutnya, kita akan menambahkan asosiasi pada `models/region.js` dan 
   `models/mining.js`. Kode dapat dilihat di bawah ini.
 
-`relation model nya declare`
 ```javascript
 // File: models/region.js
   static associate(models) {
@@ -359,4 +370,26 @@ const { Mining, Region } = require('../models/index.js');
 ...
 ```
 
+### Langkah 7 - Membuat Validasi via Sequelize
+Sebagai bahan pembelajaran kita, maka kita akan mencoba untuk melakukan
+validasi terhadap data yang ada sesuai requirement di atas, dengan menggunakan
+sequelize Validation.
+
+Karena data yang akan kita validasi ada pada model `Mining`, maka kita 
+selanjutnya akan memodifikasi kode pada `models/mining.js`
+
+```javascript
+// Files: models/mining.js
+...
+  Mining.init({
+    // tambahkan validasi di sini
+    name: DataTypes.STRING,
+    type: DataTypes.STRING,
+    amount: DataTypes.INTEGER
+  }
+...
+```
+
 ### References
+- [Validation - Terms](https://www.computerscience.gcse.guru/theory/validation)
+- [Sequelize - Validation & Constraint](https://sequelize.org/master/manual/validations-and-constraints.html)
